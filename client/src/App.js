@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Terminal from './components/Terminal';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import config from './config';
 
 const AppContainer = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ function App() {
 
   useEffect(() => {
     // Initialize socket connection
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io(config.serverUrl);
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
@@ -66,7 +67,7 @@ function App() {
 
   const fetchCurrentDirectory = async () => {
     try {
-      const response = await fetch('/api/current-directory');
+      const response = await fetch(`${config.apiBaseUrl}/api/current-directory`);
       const data = await response.json();
       setCurrentDirectory(data.directory);
     } catch (error) {

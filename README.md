@@ -99,6 +99,15 @@ PORT=5000
 NODE_ENV=development
 ```
 
+### Frontend Configuration
+For production deployment, create a `.env` file in the `client/` directory:
+
+```env
+REACT_APP_SERVER_URL=https://your-backend-url.herokuapp.com
+```
+
+Replace `your-backend-url.herokuapp.com` with your actual backend deployment URL.
+
 ### Customization
 - **Port**: Change the server port in `server/index.js`
 - **Styling**: Modify colors and themes in the styled components
@@ -131,6 +140,49 @@ NODE_ENV=development
 - Consider implementing command whitelisting for production use
 - The application runs commands in the current working directory
 
+## 🚀 Deployment
+
+### Frontend Deployment (GitHub Pages)
+
+1. **Update the homepage URL** in `client/package.json`:
+   ```json
+   "homepage": "https://YOUR_USERNAME.github.io/terminal-app"
+   ```
+
+2. **Set the backend URL** by creating `client/.env`:
+   ```env
+   REACT_APP_SERVER_URL=https://your-backend-url.herokuapp.com
+   ```
+
+3. **Deploy to GitHub Pages**:
+   ```bash
+   cd client
+   npm run deploy
+   ```
+
+### Backend Deployment (Heroku/Railway/Render)
+
+1. **Deploy your backend** to any of these platforms:
+   - [Heroku](https://heroku.com) (free tier available)
+   - [Railway](https://railway.app) (free tier available)
+   - [Render](https://render.com) (free tier available)
+
+2. **Set environment variables** on your deployment platform:
+   ```env
+   PORT=5000
+   NODE_ENV=production
+   ```
+
+3. **Update the frontend** with your backend URL in `client/.env`
+
+### CORS Configuration
+The server is configured to allow requests from:
+- `http://localhost:3000` (development)
+- `https://*.github.io` (GitHub Pages)
+- `https://*.herokuapp.com` (Heroku)
+- `https://*.railway.app` (Railway)
+- `https://*.render.com` (Render)
+
 ## 🐛 Troubleshooting
 
 ### Common Issues
@@ -145,8 +197,14 @@ NODE_ENV=development
    - Ensure both frontend and backend are running
    - Check firewall settings
    - Verify CORS configuration
+   - Check that the backend URL is correctly set in `client/.env`
 
-3. **Command not found**
+3. **CORS errors**
+   - Ensure your backend is deployed and accessible
+   - Check that the frontend is using the correct backend URL
+   - Verify CORS configuration in `server/index.js`
+
+4. **Command not found**
    - Ensure the command exists in your system PATH
    - Check if the command requires sudo privileges
 
