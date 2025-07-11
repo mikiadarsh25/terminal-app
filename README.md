@@ -5,6 +5,7 @@ A modern, web-based terminal application built with **Node.js** and **React**. T
 ## ✨ Features
 
 - **Real-time Command Execution**: Execute system commands with live output
+- **Linux System Services**: Comprehensive Linux system monitoring and management
 - **Beautiful UI**: Modern, dark-themed interface with syntax highlighting
 - **Command History**: View and manage your command history
 - **Real-time Communication**: WebSocket-based communication for instant updates
@@ -62,22 +63,29 @@ A modern, web-based terminal application built with **Node.js** and **React**. T
 ```
 terminal-app/
 ├── server/
-│   └── index.js          # Express server with Socket.IO
+│   ├── index.js              # Express server with Socket.IO
+│   ├── services/
+│   │   └── linuxServices.js  # Linux system services
+│   ├── routes/
+│   │   └── linuxRoutes.js    # Linux services API routes
+│   ├── docs/
+│   │   └── LINUX_SERVICES.md # Linux services documentation
+│   └── test-linux-services.js # Linux services test script
 ├── client/
 │   ├── public/
-│   │   ├── index.html    # Main HTML file
-│   │   └── manifest.json # Web app manifest
+│   │   ├── index.html        # Main HTML file
+│   │   └── manifest.json     # Web app manifest
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Terminal.js   # Main terminal component
 │   │   │   ├── Header.js     # App header
 │   │   │   └── Sidebar.js    # Command history sidebar
-│   │   ├── App.js        # Main React app
-│   │   ├── index.js      # React entry point
-│   │   └── index.css     # Global styles
-│   └── package.json      # React dependencies
-├── package.json          # Main project dependencies
-└── README.md            # This file
+│   │   ├── App.js            # Main React app
+│   │   ├── index.js          # React entry point
+│   │   └── index.css         # Global styles
+│   └── package.json          # React dependencies
+├── package.json              # Main project dependencies
+└── README.md                # This file
 ```
 
 ## 🎯 Available Scripts
@@ -88,6 +96,7 @@ terminal-app/
 - `npm run build` - Build the React app for production
 - `npm run install-all` - Install dependencies for both frontend and backend
 - `npm start` - Start the production server
+- `npm run test-linux` - Test Linux services functionality
 
 ## 🔧 Configuration
 
@@ -98,6 +107,110 @@ Create a `.env` file in the root directory:
 PORT=3004
 NODE_ENV=development
 ```
+
+## 🐧 Linux System Services
+
+The application now includes comprehensive Linux system services for monitoring and managing Linux systems. These services are available through both REST API endpoints and real-time Socket.IO events.
+
+### Available Services
+
+#### System Monitoring
+- **System Information**: CPU, memory, disk, and uptime data
+- **Process Management**: View and monitor running processes
+- **Resource Usage**: Real-time CPU and memory monitoring
+- **Temperature Monitoring**: System temperature readings (requires `sensors`)
+
+#### Network Services
+- **Network Information**: Interface details, connections, and routing
+- **Connectivity Testing**: Ping and traceroute utilities
+- **Port Monitoring**: Open ports and network status
+- **Firewall Status**: UFW, iptables, and firewalld support
+
+#### File System Operations
+- **Disk Usage**: Analyze disk space usage
+- **Directory Contents**: List files and directories
+- **File Search**: Find files by pattern
+- **File Information**: Detailed file statistics
+
+#### System Administration
+- **Package Management**: Support for apt, yum, and pacman
+- **Service Management**: Start, stop, and restart system services
+- **User Management**: View system users and active sessions
+- **System Logs**: Access system and service logs
+
+### API Endpoints
+
+All Linux services are available at `/api/linux/`:
+
+```bash
+# System information
+GET /api/linux/system/info
+GET /api/linux/system/processes?limit=20
+GET /api/linux/system/load
+GET /api/linux/system/memory
+GET /api/linux/system/cpu
+
+# Network services
+GET /api/linux/network/info
+GET /api/linux/network/ping/google.com?count=4
+GET /api/linux/network/traceroute/google.com
+GET /api/linux/network/ports
+
+# File system
+GET /api/linux/filesystem/usage?path=/home
+GET /api/linux/filesystem/contents?path=/var/log
+GET /api/linux/filesystem/find?pattern=*.log&directory=/var/log
+
+# System administration
+GET /api/linux/packages/count
+POST /api/linux/packages/update
+GET /api/linux/services/nginx/status
+POST /api/linux/services/nginx/restart
+GET /api/linux/logs/system?lines=50
+```
+
+### Socket.IO Events
+
+Real-time monitoring events:
+
+```javascript
+// Request system information
+socket.emit('linux-system-info');
+socket.on('linux-system-info-result', (data) => {
+  console.log('System Info:', data);
+});
+
+// Start real-time monitoring
+socket.emit('linux-start-monitoring');
+socket.on('linux-monitoring-data', (data) => {
+  console.log('Monitoring Data:', data);
+});
+```
+
+### Testing Linux Services
+
+Run the Linux services test script:
+
+```bash
+npm run test-linux
+```
+
+### Documentation
+
+For detailed documentation, see [server/docs/LINUX_SERVICES.md](server/docs/LINUX_SERVICES.md).
+
+### Platform Support
+
+- **Linux**: Full functionality available
+- **macOS**: Limited functionality (basic commands only)
+- **Windows**: Not supported (returns platform error)
+
+### Security Features
+
+- Command validation against whitelist
+- Platform detection and graceful fallback
+- Timeout protection for long-running commands
+- Buffer size limits to prevent memory issues
 
 ### Frontend Configuration
 For production deployment, create a `.env` file in the `client/` directory:

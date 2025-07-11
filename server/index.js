@@ -7,6 +7,9 @@ const { exec } = require('child_process');
 const chalk = require('chalk');
 const figlet = require('figlet');
 
+// Import Linux services routes
+const linuxRoutes = require('./routes/linuxRoutes');
+
 const app = express();
 const server = http.createServer(app);
 // CORS configuration
@@ -94,6 +97,10 @@ function executeCommand(command) {
   });
 }
 
+// Import LinuxServices for Socket.IO
+const LinuxServices = require('./services/linuxServices');
+const linuxServices = new LinuxServices();
+
 // Socket.IO connection handling
 io.on('connection', (socket) => {
   console.log(chalk.green('Client connected:', socket.id));
@@ -111,6 +118,82 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Linux Services Socket Events
+  socket.on('linux-system-info', async () => {
+    try {
+      const result = await linuxServices.getSystemInfo();
+      socket.emit('linux-system-info-result', result);
+    } catch (error) {
+      socket.emit('linux-system-info-result', {
+        success: false,
+        output: error.message
+      });
+    }
+  });
+
+  socket.on('linux-processes', async (data) => {
+    try {
+      const limit = data.limit || 20;
+      const result = await linuxServices.getTopProcesses(limit);
+      socket.emit('linux-processes-result', result);
+    } catch (error) {
+      socket.emit('linux-processes-result', {
+        success: false,
+        output: error.message
+      });
+    }
+  });
+
+  socket.on('linux-network-info', async () => {
+    try {
+      const result = await linuxServices.getNetworkInfo();
+      socket.emit('linux-network-info-result', result);
+    } catch (error) {
+      socket.emit('linux-network-info-result', {
+        success: false,
+        output: error.message
+      });
+    }
+  });
+
+  socket.on('linux-memory-usage', async () => {
+    try {
+      const result = await linuxServices.getMemoryUsage();
+      socket.emit('linux-memory-usage-result', result);
+    } catch (error) {
+      socket.emit('linux-memory-usage-result', {
+        success: false,
+        output: error.message
+      });
+    }
+  });
+
+  socket.on('linux-cpu-usage', async () => {
+    try {
+      const result = await linuxServices.getCpuUsage();
+      socket.emit('linux-cpu-usage-result', result);
+    } catch (error) {
+      socket.emit('linux-cpu-usage-result', {
+        success: false,
+        output: error.message
+      });
+    }
+  });
+
+  socket.on('linux-start-monitoring', async () => {
+    try {
+      const result = await linuxServices.startRealtimeMonitoring((data) => {
+        socket.emit('linux-monitoring-data', data);
+      });
+      socket.emit('linux-monitoring-started', result);
+    } catch (error) {
+      socket.emit('linux-monitoring-started', {
+        success: false,
+        output: error.message
+      });
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log(chalk.red('Client disconnected:', socket.id));
   });
@@ -124,6 +207,9 @@ app.get('/api/status', (req, res) => {
 app.get('/api/current-directory', (req, res) => {
   res.json({ directory: process.cwd() });
 });
+
+// Linux Services Routes
+app.use('/api/linux', linuxRoutes);
 
 // Serve React app for all other routes
 app.get('*', (req, res) => {
