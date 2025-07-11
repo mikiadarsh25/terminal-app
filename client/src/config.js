@@ -1,7 +1,7 @@
 // Configuration for different environments
 const config = {
   development: {
-    serverUrl: 'http://localhost:5000',
+    serverUrl: 'http://localhost:3004',
     apiBaseUrl: ''
   },
   production: {

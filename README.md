@@ -55,7 +55,7 @@ A modern, web-based terminal application built with **Node.js** and **React**. T
 
 4. **Open your browser**
    - Frontend: http://localhost:3000
-   - Backend: http://localhost:5000
+   - Backend: http://localhost:3004
 
 ## 📁 Project Structure
 
@@ -95,7 +95,7 @@ terminal-app/
 Create a `.env` file in the root directory:
 
 ```env
-PORT=5000
+PORT=3004
 NODE_ENV=development
 ```
 
@@ -169,7 +169,7 @@ Replace `your-backend-url.herokuapp.com` with your actual backend deployment URL
 
 2. **Set environment variables** on your deployment platform:
    ```env
-   PORT=5000
+   PORT=3004
    NODE_ENV=production
    ```
 
@@ -189,8 +189,8 @@ The server is configured to allow requests from:
 
 1. **Port already in use**
    ```bash
-   # Kill process using port 5000
-   lsof -ti:5000 | xargs kill -9
+   # Kill process using port 3004
+   lsof -ti:3004 | xargs kill -9
    ```
 
 2. **Socket connection failed**
